@@ -13,6 +13,9 @@ Route::get('/dashboard', function () {
     return redirect()->route('groups.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+// Public invitation route (no auth required)
+Route::get('/invite/{inviteCode}', [GroupController::class, 'handleInvite'])->name('groups.invite');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

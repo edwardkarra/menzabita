@@ -208,4 +208,46 @@ class GroupController extends Controller
 
         return back()->with('success', 'Member removed successfully.');
     }
+
+    /**
+     * Handle invitation link access.
+     */
+    public function handleInvite($inviteCode)
+    {
+        $group = Group::where('invite_code', $inviteCode)
+            ->where('is_active', true)
+            ->first();
+
+        if (!$group) {
+            return redirect()->route('groups.index')
+                ->withErrors(['error' => 'Invalid or expired invitation link.']);
+        }
+
+        // If user is not authenticated, redirect to register with invitation data
+        if (!Auth::check()) {
+            return redirect()->route('register')
+                ->with('invitation', [
+                    'group_id' => $group->id,
+                    'group_name' => $group->name,
+                    'invite_code' => $inviteCode
+                ]);
+        }
+
+        // If user is authenticated, check if already a member
+        if ($group->isMember(Auth::user())) {
+            return redirect()->route('groups.show', $group)
+                ->with('info', 'You are already a member of this group.');
+        }
+
+        // Add user as a member
+        GroupMember::create([
+            'group_id' => $group->id,
+            'user_id' => Auth::id(),
+            'role' => 'member',
+            'joined_at' => now(),
+        ]);
+
+        return redirect()->route('groups.show', $group)
+            ->with('success', 'Successfully joined the group!');
+    }
 }

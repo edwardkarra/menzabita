@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Group;
+use App\Models\GroupMember;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,7 +21,8 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
-        return view('auth.register');
+        $invitation = session('invitation');
+        return view('auth.register', compact('invitation'));
     }
 
     /**
@@ -44,6 +47,27 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
+
+        // Check if there's an invitation to process
+        $invitation = session('invitation');
+        if ($invitation && isset($invitation['group_id'])) {
+            $group = Group::find($invitation['group_id']);
+            if ($group && $group->is_active) {
+                // Add user to the group
+                GroupMember::create([
+                    'group_id' => $group->id,
+                    'user_id' => $user->id,
+                    'role' => 'member',
+                    'joined_at' => now(),
+                ]);
+
+                // Clear the invitation from session
+                session()->forget('invitation');
+
+                return redirect()->route('groups.show', $group)
+                    ->with('success', 'Account created successfully! You have been added to the group.');
+            }
+        }
 
         return redirect(route('dashboard', absolute: false));
     }

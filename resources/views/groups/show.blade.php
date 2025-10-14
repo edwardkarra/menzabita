@@ -41,12 +41,20 @@
                         <h3 class="text-lg font-medium text-gray-900 mb-4">Invite Code</h3>
                         <div class="flex items-center justify-between bg-gray-50 rounded-lg p-3">
                             <code class="text-lg font-mono font-bold text-blue-600">{{ $group->invite_code }}</code>
-                            <button onclick="copyInviteCode()" class="btn-secondary text-sm">
-                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                                </svg>
-                                Copy
-                            </button>
+                            <div class="flex gap-2">
+                                <button onclick="copyInviteCode()" class="btn-secondary text-sm">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                    </svg>
+                                    Copy
+                                </button>
+                                <button onclick="shareInviteLink()" class="btn-primary text-sm">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+                                    </svg>
+                                    Share
+                                </button>
+                            </div>
                         </div>
                         <p class="text-sm text-gray-500 mt-2">Share this code with friends to invite them to the group.</p>
                     </div>
@@ -176,6 +184,32 @@
                     button.classList.remove('bg-green-100', 'text-green-800');
                 }, 2000);
             });
+        }
+
+        function shareInviteLink() {
+            const inviteUrl = '{{ route("groups.invite", $group->invite_code) }}';
+            
+            if (navigator.share) {
+                // Use native sharing if available
+                navigator.share({
+                    title: 'Join {{ $group->name }}',
+                    text: 'You\'re invited to join the group "{{ $group->name }}" on Menzabita!',
+                    url: inviteUrl
+                }).catch(console.error);
+            } else {
+                // Fallback to copying the link
+                navigator.clipboard.writeText(inviteUrl).then(function() {
+                    const button = event.target.closest('button');
+                    const originalText = button.innerHTML;
+                    button.innerHTML = '<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Link Copied!';
+                    button.classList.add('bg-green-100', 'text-green-800');
+                    
+                    setTimeout(() => {
+                        button.innerHTML = originalText;
+                        button.classList.remove('bg-green-100', 'text-green-800');
+                    }, 2000);
+                });
+            }
         }
     </script>
 </x-app-layout>
