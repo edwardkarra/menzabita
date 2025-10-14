@@ -6,11 +6,11 @@ use App\Http\Controllers\AvailabilityController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect(route('groups.index'));
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return redirect()->route('groups.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {

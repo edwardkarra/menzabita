@@ -1,4 +1,4 @@
-const CACHE_NAME = 'menzabita-v0.2.0';
+const CACHE_NAME = 'menzabita-v0.2.1';
 const STATIC_CACHE = 'menzabita-static-v0.2.0';
 const DYNAMIC_CACHE = 'menzabita-dynamic-v0.2.0';
 

@@ -68,7 +68,7 @@
                                 </div>
 
                                 <div class="flex flex-col sm:flex-row gap-2">
-                                    <a href="{{ route('groups.show', $group) }}" class="btn-primary flex-1 text-center">
+                                    <a href="{{ route('availability.calendar', $group) }}" class="btn-primary flex-1 text-center">
                                         View Group
                                     </a>
                                     

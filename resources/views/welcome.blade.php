@@ -41,8 +41,8 @@
                 @if (Route::has('login'))
                     <nav class="flex space-x-2">
                         @auth
-                            <a href="{{ url('/dashboard') }}" class="btn-primary text-sm">
-                                Dashboard
+                            <a href="{{ route('groups.index') }}" class="btn-primary text-sm">
+                                My Groups
                             </a>
                         @else
                             <a href="{{ route('login') }}" class="btn-secondary text-sm">
@@ -87,8 +87,8 @@
                             Sign In
                         </a>
                     @else
-                        <a href="{{ url('/dashboard') }}" class="btn-primary w-full block text-center">
-                            Go to Dashboard
+                        <a href="{{ route('groups.index') }}" class="btn-primary w-full block text-center">
+                            Go to My Groups
                         </a>
                     @endguest
                 </div>

@@ -52,38 +52,6 @@
                             @enderror
                         </div>
 
-                        <!-- Current Invite Code Display -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Current Invite Code
-                            </label>
-                            <div class="flex items-center justify-between bg-gray-50 rounded-lg p-3">
-                                <code class="text-lg font-mono font-bold text-blue-600">{{ $group->invite_code }}</code>
-                                <button type="button" onclick="copyInviteCode()" class="btn-secondary text-sm">
-                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                                    </svg>
-                                    Copy
-                                </button>
-                            </div>
-                            <p class="text-gray-500 text-sm mt-1">The invite code cannot be changed to maintain group security.</p>
-                        </div>
-
-                        <!-- Group Stats -->
-                        <div class="bg-gray-50 rounded-lg p-4">
-                            <h4 class="text-sm font-medium text-gray-900 mb-3">Group Statistics</h4>
-                            <div class="grid grid-cols-2 gap-4 text-sm">
-                                <div>
-                                    <span class="text-gray-500">Members:</span>
-                                    <span class="font-medium text-gray-900">{{ $group->getMemberCount() }}</span>
-                                </div>
-                                <div>
-                                    <span class="text-gray-500">Created:</span>
-                                    <span class="font-medium text-gray-900">{{ $group->created_at->format('M j, Y') }}</span>
-                                </div>
-                            </div>
-                        </div>
-
                         <!-- Action Buttons -->
                         <div class="flex flex-col sm:flex-row gap-3 pt-4">
                             <button type="submit" class="btn-primary flex-1">
@@ -133,22 +101,4 @@
             </div>
         </div>
     </div>
-
-    <script>
-        function copyInviteCode() {
-            const code = '{{ $group->invite_code }}';
-            navigator.clipboard.writeText(code).then(function() {
-                // Show success message
-                const button = event.target.closest('button');
-                const originalText = button.innerHTML;
-                button.innerHTML = '<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Copied!';
-                button.classList.add('bg-green-100', 'text-green-800');
-                
-                setTimeout(() => {
-                    button.innerHTML = originalText;
-                    button.classList.remove('bg-green-100', 'text-green-800');
-                }, 2000);
-            }, 2000);
-        }
-    </script>
 </x-app-layout>
