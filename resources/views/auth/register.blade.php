@@ -28,10 +28,8 @@
         <div>
             <x-input-label for="phone" :value="__('Phone Number')" />
             <div class="flex">
-                <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
-                    +963
-                </span>
-                <x-text-input id="phone_input" class="block mt-1 w-full rounded-l-none" type="text" name="phone_display" :value="old('phone') ? substr(old('phone'), 4) : ''" required autocomplete="phone" placeholder="9xxxxxxxx" maxlength="9" />
+                <div id="country-selector-register"></div>
+                <x-text-input id="phone_input" class="block mt-1 w-full rounded-l-none" type="text" name="phone_display" :value="old('phone') ? substr(old('phone'), strpos(old('phone'), ' ') ?: 4) : ''" required autocomplete="phone" placeholder="9xxxxxxxx" />
                 <input type="hidden" id="phone" name="phone" :value="old('phone')" />
             </div>
             <x-input-error :messages="$errors->get('phone')" class="mt-2" />
@@ -72,21 +70,39 @@
     </form>
 </x-guest-layout>
 
+    <!-- Country Codes and Selector Scripts -->
+    <script src="{{ asset('js/country-codes.js') }}?v={{ time() }}"></script>
+    <script src="{{ asset('js/CountryCodeSelector.js') }}?v={{ time() }}"></script>
+
 <script>
+// Initialize the country code selector for register
+const registerSelector = new CountryCodeSelector('country-selector-register', '+963');
+
+// Update the hidden phone field when country or phone input changes
+function updatePhoneField() {
+    const phoneDisplay = document.getElementById('phone_input');
+    const phoneHidden = document.getElementById('phone');
+    const selectedCountryCode = registerSelector.getSelectedCountryCode();
+    
+    if (phoneDisplay && phoneHidden) {
+        phoneHidden.value = selectedCountryCode + phoneDisplay.value;
+    }
+}
+
+// Listen for country selection changes
+document.addEventListener('countrySelected', updatePhoneField);
+
+// Listen for phone input changes
 document.addEventListener('DOMContentLoaded', function() {
-    const phoneInput = document.getElementById('phone_input');
-    const hiddenPhone = document.getElementById('phone');
-    
-    phoneInput.addEventListener('input', function() {
-        // Only allow digits
-        this.value = this.value.replace(/\D/g, '');
-        // Update hidden field with +963 prefix
-        hiddenPhone.value = '+963' + this.value;
-    });
-    
-    // Initialize hidden field on page load
-    if (phoneInput.value) {
-        hiddenPhone.value = '+963' + phoneInput.value;
+    const phoneDisplay = document.getElementById('phone_input');
+    if (phoneDisplay) {
+        phoneDisplay.addEventListener('input', updatePhoneField);
+        
+        // Handle existing phone value on page load
+        const existingPhone = phoneDisplay.value;
+        if (existingPhone) {
+            updatePhoneField();
+        }
     }
 });
 </script>
