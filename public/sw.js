@@ -1,11 +1,12 @@
-const CACHE_NAME = 'menzabita-v0.2.1';
-const STATIC_CACHE = 'menzabita-static-v0.2.0';
-const DYNAMIC_CACHE = 'menzabita-dynamic-v0.2.0';
+const CACHE_NAME = 'menzabita-v0.2.2';
+const STATIC_CACHE = 'menzabita-static-v0.2.1';
+const DYNAMIC_CACHE = 'menzabita-dynamic-v0.2.1';
 
 // Static assets that should be cached with cache-first strategy
 const staticAssets = [
   '/manifest.json',
   '/logo.png',
+  '/logo-white.png',
   '/favicon.ico',
   '/pwa-install.js',
   '/sw.js'
@@ -43,7 +44,7 @@ self.addEventListener('activate', event => {
 // Helper function to determine if request is for static asset
 function isStaticAsset(url) {
   const staticExtensions = ['.css', '.js', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.ico', '.woff', '.woff2', '.ttf', '.eot'];
-  const staticPaths = ['/manifest.json', '/logo.png', '/favicon.ico', '/pwa-install.js', '/sw.js'];
+  const staticPaths = ['/manifest.json', '/logo.png', '/logo-white.png', '/favicon.ico', '/pwa-install.js', '/sw.js'];
   
   return staticExtensions.some(ext => url.pathname.endsWith(ext)) || 
          staticPaths.some(path => url.pathname === path) ||
