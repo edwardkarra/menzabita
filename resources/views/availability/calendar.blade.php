@@ -43,25 +43,6 @@
                 </a>
             </div>
 
-            <!-- Calendar Info -->
-            <div class="bg-blue-50 border border-blue-200 rounded-md p-4 mb-6">
-                <div class="flex">
-                    <div class="flex-shrink-0">
-                        <svg class="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-                        </svg>
-                    </div>
-                    <div class="ml-3">
-                        <h3 class="text-sm font-medium text-blue-800">
-                            Calendar View (Next 30 Days)
-                        </h3>
-                        <div class="mt-2 text-sm text-blue-700">
-                            <p>View when all group members are available. Overlapping times show the best opportunities for group activities.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     @if($availabilities->count() > 0)
@@ -82,11 +63,8 @@
                                         <div class="bg-gray-50 px-4 py-3 border-b border-gray-200">
                                             <div class="flex justify-between items-center">
                                                 <h3 class="text-lg font-semibold text-gray-800">
-                                                    {{ $currentDate->format('l, F j, Y') }}
+                                                    {{ $currentDate->format('l, j/n') }}
                                                 </h3>
-                                                <span class="text-sm text-gray-600">
-                                                    {{ $dayAvailabilities->count() }} {{ Str::plural('person', $dayAvailabilities->count()) }} available
-                                                </span>
                                             </div>
                                         </div>
 
