@@ -5,3 +5,4 @@ import Alpine from 'alpinejs';
 window.Alpine = Alpine;
 
 Alpine.start();
+window.addEventListener('pageshow', e => { if (e.persisted) location.reload(); });

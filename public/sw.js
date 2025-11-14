@@ -39,6 +39,17 @@ self.addEventListener('activate', event => {
     })
   );
   self.clients.claim();
+  event.waitUntil((async () => {
+    const cache = await caches.open(DYNAMIC_CACHE);
+    const keys = await cache.keys();
+    for (const request of keys) {
+      const response = await cache.match(request);
+      const contentType = response && response.headers.get('content-type') || '';
+      if (contentType.includes('text/html')) {
+        await cache.delete(request);
+      }
+    }
+  })());
 });
 
 // Helper function to determine if request is for static asset
@@ -80,6 +91,15 @@ self.addEventListener('fetch', event => {
 
   event.respondWith(
     (async () => {
+      const accept = event.request.headers.get('accept') || '';
+      if (event.request.mode === 'navigate' || accept.includes('text/html')) {
+        try {
+          const networkResponse = await fetch(event.request);
+          return networkResponse;
+        } catch (error) {
+          return new Response('Offline', { status: 503 });
+        }
+      }
       // Strategy 1: Network-first for dynamic content that should bypass cache
       if (shouldBypassCache(requestUrl)) {
         try {
@@ -122,16 +142,17 @@ self.addEventListener('fetch', event => {
           const cache = await caches.open(DYNAMIC_CACHE);
           
           // Add timestamp to track cache age
-          const headers = new Headers(responseToCache.headers);
-          headers.set('sw-cached-at', Date.now().toString());
-          
-          const cachedResponse = new Response(responseToCache.body, {
-            status: responseToCache.status,
-            statusText: responseToCache.statusText,
-            headers: headers
-          });
-          
-          cache.put(event.request, cachedResponse);
+          const contentType = responseToCache.headers.get('content-type') || '';
+          if (!contentType.includes('text/html')) {
+            const headers = new Headers(responseToCache.headers);
+            headers.set('sw-cached-at', Date.now().toString());
+            const cachedResponse = new Response(responseToCache.body, {
+              status: responseToCache.status,
+              statusText: responseToCache.statusText,
+              headers: headers
+            });
+            cache.put(event.request, cachedResponse);
+          }
         }
         return networkResponse;
       } catch (error) {
